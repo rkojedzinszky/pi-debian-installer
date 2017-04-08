@@ -1,0 +1,14 @@
+#!/bin/sh
+
+bootcmd=$(tempfile)
+version="$1"
+
+KERNEL=vmlinuz-$version
+INITRD=initrd.img-$version
+UINITRD=u$INITRD
+
+mkimage -A arm -T ramdisk -C none -d /boot/$INITRD /boot/$UINITRD
+sed -e "s/@KERNEL@/$KERNEL/g" -e "s/@UINITRD@/$UINITRD/g" /boot/boot.cmd.template > $bootcmd
+mkimage -A arm -T script -C none -d $bootcmd /boot/boot.scr
+
+rm -f $bootcmd
