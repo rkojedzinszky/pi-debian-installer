@@ -3,7 +3,7 @@
 TARGET_ARCH=armhf
 TARGET_DIST=stretch
 DEB_MIRROR=http://dev.euronetrt.hu:3142/debian/
-PACKAGES=e2fsprogs,vim,network-manager,u-boot-tools,cpufrequtils
+PACKAGES=firmware-brcm80211,e2fsprogs,vim,network-manager,u-boot-tools,cpufrequtils
 
 CLEANUP=( )
 cleanup() {
@@ -89,7 +89,7 @@ fi
 
 hook pre_debootstrap
 
-debootstrap --arch $TARGET_ARCH $TARGET_DIST $rootdir $DEB_MIRROR
+debootstrap --components=main,contrib,non-free --arch $TARGET_ARCH $TARGET_DIST $rootdir $DEB_MIRROR
 
 chroot $rootdir apt-get install -f -y ${PACKAGES//,/ }
 
