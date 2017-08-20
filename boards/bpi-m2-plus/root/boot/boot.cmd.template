@@ -1,0 +1,7 @@
+setenv machid 1029
+setenv bootm_boot_mode sec
+#setenv bootargs console=ttyS0,115200  console=tty1 root=UUID=@UUID@ rw rootwait panic=10 ${extra}
+setenv bootargs console=ttyS0,115200  console=tty1 root=/dev/mmcblk0p3 rw rootwait panic=10 ${extra}
+load ${devtype} ${devnum}:${bootpart} 0x43000000 script.bin
+load ${devtype} ${devnum}:${bootpart} 0x46000000 zImage
+bootz 0x46000000
