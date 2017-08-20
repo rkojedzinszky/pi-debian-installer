@@ -3,7 +3,7 @@
 TARGET_ARCH=armhf
 TARGET_DIST=stretch
 DEB_MIRROR=http://dev.euronetrt.hu:3142/debian/
-PACKAGES=firmware-brcm80211,e2fsprogs,vim,network-manager,u-boot-tools,cpufrequtils
+PACKAGES=firmware-brcm80211,e2fsprogs,vim,u-boot-tools,cpufrequtils
 
 CLEANUP=( )
 cleanup() {
@@ -40,10 +40,12 @@ dev="$2"
 hook pre_partitioning
 
 cat <<EOF | sfdisk -f -u S $dev
-2048,262144,83,*
-264192,524288,82
-1050624,
+,128M,83,*
+,256M,82
+,1536M
+,
 EOF
+#sgdisk -Z -n 0:0:+128M -n 0:0:+256M -t 0:8200 -n 0:0:+1536M $dev
 
 hook post_partitioning
 
