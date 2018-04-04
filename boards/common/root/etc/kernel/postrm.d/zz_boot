@@ -1,0 +1,8 @@
+#!/bin/sh
+
+version="$1"
+
+INITRD=initrd.img-$version
+UINITRD=u$INITRD
+
+rm -f /boot/$UINITRD

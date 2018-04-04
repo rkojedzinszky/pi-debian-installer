@@ -41,8 +41,8 @@ hook pre_partitioning
 
 cat <<EOF | sfdisk -f -u S $dev
 ,128M,83,*
-,256M,82
-,1536M
+,1024M,82
+,8192M
 ,
 EOF
 #sgdisk -Z -n 0:0:+128M -n 0:0:+256M -t 0:8200 -n 0:0:+1536M $dev
