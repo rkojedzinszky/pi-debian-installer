@@ -3,7 +3,7 @@
 TARGET_ARCH=armhf
 TARGET_DIST=stretch
 DEB_MIRROR=http://dev.euronetrt.hu:3142/debian/
-PACKAGES=firmware-brcm80211,e2fsprogs,vim,u-boot-tools,cpufrequtils
+PACKAGES=firmware-brcm80211,e2fsprogs,vim,u-boot-tools,cpufrequtils,lvm2
 
 CLEANUP=( )
 cleanup() {
@@ -40,11 +40,10 @@ dev="$2"
 hook pre_partitioning
 
 cat <<EOF | sfdisk -f -u S $dev
-,128M,83,*
-,1024M,82
-,8192M
-,
+,256M,83,*
+,,8e,*
 EOF
+sleep 1
 #sgdisk -Z -n 0:0:+128M -n 0:0:+256M -t 0:8200 -n 0:0:+1536M $dev
 
 hook post_partitioning
@@ -52,8 +51,16 @@ hook post_partitioning
 _devices=($(lsblk -n -o name -p -r $dev))
 
 bootdev=${_devices[1]}
-swapdev=${_devices[2]}
-rootdev=${_devices[3]}
+physdev=${_devices[2]}
+
+vgname="$board-$RANDOM"
+vgcreate "$vgname" "$physdev"
+CLEANUP+=("vgchange -a n $vgname")
+
+lvcreate -W y -n root -L 2048M $vgname
+rootdev="/dev/$vgname/root"
+lvcreate -W y -n swap -L 1024M $vgname
+swapdev="/dev/$vgname/swap"
 
 mkfs.ext3 -F $bootdev
 tune2fs -o journal_data_writeback,discard $bootdev
@@ -82,6 +89,9 @@ tar cf - -C boards/common/root . | tar xf - -C "$rootdir"
 if [ -d "$BOARD_DIR/root" ]; then
 	tar cf - -C "$BOARD_DIR/root" . | tar xf - -C "$rootdir"
 fi
+
+# fix/hardcode root= kernel parameter
+sed -i -e "s,@ROOT@,$rootdev,g" "$rootdir/boot/boot.cmd.template"
 
 if [ $(dpkg --print-architecture) != $TARGET_ARCH ]; then
 	mkdir -p $rootdir/usr/bin/
