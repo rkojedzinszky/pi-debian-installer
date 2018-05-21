@@ -3,7 +3,10 @@
 TARGET_ARCH=armhf
 TARGET_DIST=stretch
 DEB_MIRROR=http://dev.euronetrt.hu:3142/debian/
-PACKAGES=firmware-brcm80211,e2fsprogs,vim,u-boot-tools,cpufrequtils,lvm2
+PACKAGES=firmware-brcm80211,e2fsprogs,vim,u-boot-tools,cpufrequtils
+USE_LVM=yes
+ROOT_SIZE=2048M
+SWAP_SIZE=1024M
 
 CLEANUP=( )
 cleanup() {
@@ -39,28 +42,40 @@ dev="$2"
 
 hook pre_partitioning
 
-cat <<EOF | sfdisk -f -u S $dev
-,256M,83,*
-,,8e,*
-EOF
+if [ "$USE_LVM" = yes ]; then
+	cat <<-EOF
+	,256M,83,*
+	,,8e,*
+	EOF
+else
+	cat <<-EOF
+	,256M,83,*
+	,$SWAP_SIZE,82
+	,$ROOT_SIZE
+	EOF
+fi | sfdisk -f -u S $dev
 sleep 1
-#sgdisk -Z -n 0:0:+128M -n 0:0:+256M -t 0:8200 -n 0:0:+1536M $dev
 
 hook post_partitioning
 
 _devices=($(lsblk -n -o name -p -r $dev))
 
 bootdev=${_devices[1]}
-physdev=${_devices[2]}
+if [ "$USE_LVM" = yes ]; then
+	physdev=${_devices[2]}
+	vgname="$board-$RANDOM"
+	vgcreate "$vgname" "$physdev"
+	CLEANUP+=("vgchange -a n $vgname")
 
-vgname="$board-$RANDOM"
-vgcreate "$vgname" "$physdev"
-CLEANUP+=("vgchange -a n $vgname")
-
-lvcreate -W y -n root -L 2048M $vgname
-rootdev="/dev/$vgname/root"
-lvcreate -W y -n swap -L 1024M $vgname
-swapdev="/dev/$vgname/swap"
+	lvcreate -W y -n swap -L $SWAP_SIZE $vgname
+	swapdev="/dev/$vgname/swap"
+	lvcreate -W y -n root -L $ROOT_SIZE $vgname
+	rootdev="/dev/$vgname/root"
+	PACKAGES="$PACKAGES,lvm2"
+else
+	swapdev=${_devices[2]}
+	rootdev=${_devices[3]}
+fi
 
 mkfs.ext3 -F $bootdev
 tune2fs -o journal_data_writeback,discard $bootdev

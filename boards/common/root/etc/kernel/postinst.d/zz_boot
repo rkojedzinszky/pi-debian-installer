@@ -9,7 +9,9 @@ KERNEL=vmlinuz-$version
 INITRD=initrd.img-$version
 UINITRD=u$INITRD
 
-mkimage -A arm -T ramdisk -C none -d /boot/$INITRD /boot/$UINITRD
+if [ -f /boot/$INITRD ]; then
+	mkimage -A arm -T ramdisk -C none -d /boot/$INITRD /boot/$UINITRD
+fi
 sed -e "s/@KERNEL@/$KERNEL/g" -e "s/@UINITRD@/$UINITRD/g" /boot/boot.cmd.template > $bootcmd
 mkimage -A arm -T script -C none -d $bootcmd /boot/boot.scr
 
