@@ -125,9 +125,9 @@ hook post_debootstrap
 echo "$board" > $rootdir/etc/hostname
 
 cat <<EOF > $rootdir/etc/fstab
-UUID=$bootuuid	/boot		ext3	rw,discard	0	2
+UUID=$bootuuid	/boot		ext3	rw		0	2
 UUID=$swapuuid	none		swap	sw		0	0
-UUID=$rootuuid	/		ext4	rw,discard	0	1
+UUID=$rootuuid	/		ext4	rw		0	1
 EOF
 
 echo 'GOVERNOR="conservative"' > $rootdir/etc/default/cpufrequtils
