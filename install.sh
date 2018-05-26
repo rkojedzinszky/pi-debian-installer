@@ -67,9 +67,9 @@ if [ "$USE_LVM" = yes ]; then
 	vgcreate "$vgname" "$physdev"
 	CLEANUP+=("vgchange -a n $vgname")
 
-	lvcreate -W y -n swap -L $SWAP_SIZE $vgname
+	lvcreate --yes -W y -n swap -L $SWAP_SIZE $vgname
 	swapdev="/dev/$vgname/swap"
-	lvcreate -W y -n root -L $ROOT_SIZE $vgname
+	lvcreate --yes -W y -n root -L $ROOT_SIZE $vgname
 	rootdev="/dev/$vgname/root"
 	PACKAGES="$PACKAGES,lvm2"
 else
