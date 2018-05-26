@@ -3,7 +3,7 @@
 TARGET_ARCH=armhf
 TARGET_DIST=stretch
 DEB_MIRROR=http://dev.euronetrt.hu:3142/debian/
-PACKAGES=firmware-brcm80211,e2fsprogs,vim,u-boot-tools,cpufrequtils
+PACKAGES=firmware-brcm80211,e2fsprogs,vim,u-boot-tools,cpufrequtils,initramfs-tools
 USE_LVM=yes
 ROOT_SIZE=2048M
 SWAP_SIZE=1024M
