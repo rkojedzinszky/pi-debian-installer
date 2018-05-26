@@ -106,7 +106,7 @@ if [ -d "$BOARD_DIR/root" ]; then
 fi
 
 # fix/hardcode root= kernel parameter
-sed -i -e "s,@ROOT@,$rootdev,g" "$rootdir/boot/boot.cmd.template"
+sed -i -e "s,@ROOT@,UUID=$rootuuid,g" "$rootdir/boot/boot.cmd.template"
 
 if [ $(dpkg --print-architecture) != $TARGET_ARCH ]; then
 	mkdir -p $rootdir/usr/bin/
