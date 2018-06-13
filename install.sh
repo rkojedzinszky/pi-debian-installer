@@ -100,9 +100,9 @@ export LC_ALL=C LANGUAGE=C LANG=C
 export DEBIAN_FRONTEND=noninteractive
 export DEBCONF_NONINTERACTIVE_SEEN=true
 
-tar cf - -C boards/common/root . | tar xf - -C "$rootdir"
+tar cf - --owner=root:0 --group=root:0 -C boards/common/root . | tar xf - -C "$rootdir"
 if [ -d "$BOARD_DIR/root" ]; then
-	tar cf - -C "$BOARD_DIR/root" . | tar xf - -C "$rootdir"
+	tar cf - --owner=root:0 --group=root:0 -C "$BOARD_DIR/root" . | tar xf - -C "$rootdir"
 fi
 
 # generate bootEnv.txt
