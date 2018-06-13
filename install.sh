@@ -105,8 +105,8 @@ if [ -d "$BOARD_DIR/root" ]; then
 	tar cf - -C "$BOARD_DIR/root" . | tar xf - -C "$rootdir"
 fi
 
-# fix/hardcode root= kernel parameter
-sed -i -e "s,@ROOT@,UUID=$rootuuid,g" "$rootdir/boot/boot.cmd.template"
+# generate bootEnv.txt
+echo "root=UUID=$rootuuid" > "$rootdir/boot/bootEnv.txt"
 
 if [ $(dpkg --print-architecture) != $TARGET_ARCH ]; then
 	mkdir -p $rootdir/usr/bin/

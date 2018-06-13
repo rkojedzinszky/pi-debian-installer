@@ -2,17 +2,11 @@
 
 set -e
 
-bootcmd=$(tempfile)
 version="$1"
 
 KERNEL=vmlinuz-$version
 INITRD=initrd.img-$version
 UINITRD=u$INITRD
 
-if [ -f /boot/$INITRD ]; then
-	mkimage -A arm -T ramdisk -C none -d /boot/$INITRD /boot/$UINITRD
-fi
-sed -e "s/@KERNEL@/$KERNEL/g" -e "s/@UINITRD@/$UINITRD/g" /boot/boot.cmd.template > $bootcmd
-mkimage -A arm -T script -C none -d $bootcmd /boot/boot.scr
-
-rm -f $bootcmd
+mkimage -A arm -T ramdisk -C none -d /boot/$INITRD /boot/$UINITRD
+sed -i -e "/^kernel=/d" -e '1i\' -e "kernel=$KERNEL" -e "/^uinitrd=/d" -e '1i\' -e "uinitrd=$UINITRD" /boot/bootEnv.txt

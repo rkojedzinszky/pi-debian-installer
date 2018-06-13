@@ -1,5 +1,0 @@
-setenv bootargs console=ttyS0,115200 root=@ROOT@ rw rootwait panic=10 ${extra}
-load ${devtype} ${devnum}:${bootpart} 0x43000000 ${fdtfile}
-load ${devtype} ${devnum}:${bootpart} 0x41000000 @KERNEL@
-load ${devtype} ${devnum}:${bootpart} 0x45000000 @UINITRD@
-bootz 0x41000000 0x45000000 0x43000000
