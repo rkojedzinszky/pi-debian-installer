@@ -120,6 +120,9 @@ debootstrap --components=main,contrib,non-free --arch $TARGET_ARCH $TARGET_DIST 
 
 chroot $rootdir apt-get install -f -y ${PACKAGES//,/ }
 
+# generate boot.scr
+chroot $rootdir mkimage -T script -A arm -d /boot/boot.cmd /boot/boot.scr
+
 hook post_debootstrap
 
 echo "$board" > $rootdir/etc/hostname
