@@ -7,6 +7,7 @@ PACKAGES=firmware-brcm80211,e2fsprogs,vim,u-boot-tools,cpufrequtils,initramfs-to
 USE_LVM=yes
 ROOT_SIZE=2048M
 SWAP_SIZE=1024M
+DTB=
 
 CLEANUP=( )
 cleanup() {
@@ -124,6 +125,12 @@ chroot $rootdir apt-get install -f -y ${PACKAGES//,/ }
 chroot $rootdir mkimage -T script -A arm -d /boot/boot.cmd /boot/boot.scr
 
 hook post_debootstrap
+
+# prepare dtb
+mkdir -p $rootdir/boot/dtb
+if [ -n "$DTB" ]; then
+	cp $rootdir$DTB $rootdir/boot/dtb/
+fi
 
 echo "$board" > $rootdir/etc/hostname
 
