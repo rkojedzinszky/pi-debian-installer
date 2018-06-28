@@ -9,4 +9,4 @@ INITRD=initrd.img-$version
 UINITRD=u$INITRD
 
 mkimage -A arm -T ramdisk -C none -d /boot/$INITRD /boot/$UINITRD
-sed -i -e "/^kernel=/d" -e '1i\' -e "kernel=$KERNEL" -e "/^uinitrd=/d" -e '1i\' -e "uinitrd=$UINITRD" /boot/bootEnv.txt
+sed -i -e '1i\' -e "kernel=$KERNEL" -e '1i\' -e "uinitrd=$UINITRD" -e "/^kernel=/d" -e "/^uinitrd=/d" /boot/bootEnv.txt
