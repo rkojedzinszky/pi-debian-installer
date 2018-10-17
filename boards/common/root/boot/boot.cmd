@@ -1,4 +1,4 @@
-setenv load_addr "0x44000000"
+setenv load_addr "0x45000000"
 setenv envFile bootEnv.txt
 
 if test -e ${devtype} ${devnum} ${prefix}${envFile}; then
