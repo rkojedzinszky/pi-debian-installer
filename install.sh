@@ -66,7 +66,7 @@ bootdev=${_devices[1]}
 if [ "$USE_LVM" = yes ]; then
 	physdev=${_devices[2]}
 	vgname="$board-$RANDOM"
-	vgcreate "$vgname" "$physdev"
+	vgcreate -f "$vgname" "$physdev"
 	CLEANUP+=("vgchange -a n $vgname")
 
 	lvcreate --yes -W y -n swap -L $SWAP_SIZE $vgname
