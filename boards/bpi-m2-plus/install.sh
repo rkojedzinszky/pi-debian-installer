@@ -4,9 +4,5 @@ DTB=/usr/lib/linux-image-next-sunxi/sun8i-h3-bananapi-m2-plus.dtb
 
 post_debootstrap()
 {
-	chroot $rootdir apt-get install -y --no-install-recommends gnupg2 dirmngr
-	chroot $rootdir apt-key adv --keyserver keys.gnupg.net --recv-keys 0x93D6889F9F0E78D5
-	echo "deb http://apt.armbian.com stretch main utils" > $rootdir/etc/apt/sources.list.d/armbian.list
-	chroot $rootdir apt-get update
-	chroot $rootdir apt-get -f -y install linux-image-next-sunxi
+	. boards/common/armbian-kernel.sh
 }
