@@ -2,7 +2,7 @@
 
 : ${TARGET_ARCH=armhf}
 : ${TARGET_DIST=stretch}
-: ${DEB_MIRROR=http://http.debian.net/debian/}
+: ${DEB_MIRROR=http://deb.debian.org/debian/}
 : ${PACKAGES=firmware-brcm80211,e2fsprogs,vim,u-boot-tools,cpufrequtils,initramfs-tools}
 : ${USE_LVM=yes}
 : ${ROOT_SIZE=2048M}
