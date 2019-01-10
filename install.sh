@@ -87,14 +87,14 @@ else
 fi
 
 mkfs.ext3 -F $bootdev
-tune2fs -o journal_data_writeback,discard $bootdev
+tune2fs -o discard $bootdev
 swapuuid=
 if [ -n "$swapdev" ]; then
 	mkswap -f $swapdev
 	swapuuid=$(get_uuid $swapdev)
 fi
 mkfs.ext4 -F $rootdev
-tune2fs -o journal_data_writeback,discard $rootdev
+tune2fs -o discard $rootdev
 
 bootuuid=$(get_uuid $bootdev)
 rootuuid=$(get_uuid $rootdev)
