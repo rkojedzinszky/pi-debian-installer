@@ -50,11 +50,11 @@ if [ "$USE_LVM" = yes ]; then
 	,,8e,*
 	EOF
 else
-	cat <<-EOF
-	,256M,83,*
-	,$SWAP_SIZE,82
-	,$ROOT_SIZE
-	EOF
+	echo ",256M,83,*"
+	if [ "$SWAP_SIZE" -gt 0 ]; then
+		echo ",$SWAP_SIZE,82"
+	fi
+	echo ",$ROOT_SIZE"
 fi | sfdisk -f -u S $dev
 sleep 1
 
@@ -63,30 +63,40 @@ hook post_partitioning
 _devices=($(lsblk -n -o name -p -r $dev))
 
 bootdev=${_devices[1]}
+swapdev=
 if [ "$USE_LVM" = yes ]; then
 	physdev=${_devices[2]}
 	vgname="$board-$RANDOM"
 	vgcreate -f "$vgname" "$physdev"
 	CLEANUP+=("vgchange -a n $vgname")
 
-	lvcreate --yes -W y -n swap -L $SWAP_SIZE $vgname
-	swapdev="/dev/$vgname/swap"
+	if [ "$SWAP_SIZE" -gt 0 ]; then
+		lvcreate --yes -W y -n swap -L $SWAP_SIZE $vgname
+		swapdev="/dev/$vgname/swap"
+	fi
 	lvcreate --yes -W y -n root -L $ROOT_SIZE $vgname
 	rootdev="/dev/$vgname/root"
 	PACKAGES="$PACKAGES,lvm2"
 else
-	swapdev=${_devices[2]}
-	rootdev=${_devices[3]}
+	if [ "$SWAP_SIZE" -gt 0 ]; then
+		swapdev=${_devices[2]}
+		rootdev=${_devices[3]}
+	else
+		rootdev=${_devices[2]}
+	fi
 fi
 
 mkfs.ext3 -F $bootdev
 tune2fs -o journal_data_writeback,discard $bootdev
-mkswap -f $swapdev
+swapuuid=
+if [ -n "$swapdev" ]; then
+	mkswap -f $swapdev
+	swapuuid=$(get_uuid $swapdev)
+fi
 mkfs.ext4 -F $rootdev
 tune2fs -o journal_data_writeback,discard $rootdev
 
 bootuuid=$(get_uuid $bootdev)
-swapuuid=$(get_uuid $swapdev)
 rootuuid=$(get_uuid $rootdev)
 
 rootdir=$(mktemp -d)
@@ -137,9 +147,11 @@ echo "$board" > $rootdir/etc/hostname
 
 cat <<EOF > $rootdir/etc/fstab
 UUID=$bootuuid	/boot		ext3	rw,commit=600		0	2
-UUID=$swapuuid	none		swap	sw			0	0
 UUID=$rootuuid	/		ext4	rw,commit=600		0	1
 EOF
+if [ -n "$swapuuid" ]; then
+	echo "UUID=$swapuuid	none		swap	sw			0	0" >> $rootdir/etc/fstab
+fi
 
 echo 'GOVERNOR="conservative"' > $rootdir/etc/default/cpufrequtils
 
