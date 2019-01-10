@@ -3,12 +3,28 @@
 : ${TARGET_ARCH=armhf}
 : ${TARGET_DIST=stretch}
 : ${DEB_MIRROR=http://deb.debian.org/debian/}
-: ${PACKAGES=firmware-brcm80211,e2fsprogs,vim,u-boot-tools,cpufrequtils,initramfs-tools}
+: ${PACKAGES=firmware-brcm80211,e2fsprogs,vim,u-boot-tools,cpufrequtils,initramfs-tools,xfsprogs}
 : ${USE_LVM=yes}
 : ${ROOT_SIZE=2048M}
 : ${SWAP_SIZE=1024M}
+: ${ROOTFS_TYPE=ext4}
 
 DTB=
+
+case "$ROOTFS_TYPE" in
+	ext4)
+		mkrootfs="mkfs.ext4 -F"
+		rootfsextra=",commit=600"
+		;;
+	xfs)
+		mkrootfs="mkfs.xfs -f"
+		rootfsextra=""
+		;;
+	*)
+		echo "Root filesystem type '$ROOTFS_TYPE' not supported"
+		exit 1
+		;;
+esac
 
 CLEANUP=( )
 cleanup() {
@@ -93,8 +109,7 @@ if [ -n "$swapdev" ]; then
 	mkswap -f $swapdev
 	swapuuid=$(get_uuid $swapdev)
 fi
-mkfs.ext4 -F $rootdev
-tune2fs -o discard $rootdev
+$mkrootfs $rootdev
 
 bootuuid=$(get_uuid $bootdev)
 rootuuid=$(get_uuid $rootdev)
@@ -147,7 +162,7 @@ echo "$board" > $rootdir/etc/hostname
 
 cat <<EOF > $rootdir/etc/fstab
 UUID=$bootuuid	/boot		ext3	rw,commit=600		0	2
-UUID=$rootuuid	/		ext4	rw,commit=600		0	1
+UUID=$rootuuid	/		$ROOTFS_TYPE	rw$rootfsextra		0	1
 EOF
 if [ -n "$swapuuid" ]; then
 	echo "UUID=$swapuuid	none		swap	sw			0	0" >> $rootdir/etc/fstab
