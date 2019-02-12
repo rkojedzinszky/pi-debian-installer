@@ -117,7 +117,7 @@ rootuuid=$(get_uuid $rootdev)
 rootdir=$(mktemp -d)
 CLEANUP+=("rmdir $rootdir")
 
-mount -o nobarrier $rootdev $rootdir
+mount $rootdev $rootdir
 CLEANUP+=("umount $rootdir")
 mkdir $rootdir/boot
 mount -o nobarrier $bootdev $rootdir/boot
