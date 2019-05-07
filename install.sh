@@ -152,6 +152,8 @@ chroot $rootdir mkimage -T script -A arm -d /boot/boot.cmd /boot/boot.scr
 
 hook post_debootstrap
 
+hook install_kernel
+
 # prepare dtb
 mkdir -p $rootdir/boot/dtb
 if [ -n "$DTB" ]; then

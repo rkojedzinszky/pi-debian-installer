@@ -1,4 +1,3 @@
-post_debootstrap()
-{
-	chroot $rootdir apt-get install -f -y linux-image-armmp
-}
+# shell fragment
+
+DTB=/usr/lib/linux-image-krichy/sun6i-a31s-sinovoip-bpi-m2.dtb
