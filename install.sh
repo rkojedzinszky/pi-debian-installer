@@ -1,9 +1,9 @@
 #!/bin/bash
 
 : ${TARGET_ARCH=armhf}
-: ${TARGET_DIST=stretch}
+: ${TARGET_DIST=buster}
 : ${DEB_MIRROR=http://deb.debian.org/debian/}
-: ${PACKAGES=firmware-brcm80211,e2fsprogs,vim,u-boot-tools,cpufrequtils,initramfs-tools,xfsprogs}
+: ${PACKAGES=firmware-brcm80211,e2fsprogs,vim,u-boot-tools,cpufrequtils,initramfs-tools,xfsprogs,haveged}
 : ${USE_LVM=yes}
 : ${ROOT_SIZE=2048M}
 : ${SWAP_SIZE=1024M}
