@@ -1,6 +1,6 @@
 #!/bin/bash
 
-: ${TARGET_ARCH=armhf}
+TARGET_ARCH=armhf
 : ${TARGET_DIST=buster}
 : ${DEB_MIRROR=http://deb.debian.org/debian/}
 : ${PACKAGES=firmware-brcm80211,e2fsprogs,vim,u-boot-tools,cpufrequtils,initramfs-tools,xfsprogs,ssh}
