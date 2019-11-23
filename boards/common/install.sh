@@ -5,7 +5,7 @@ hook()
 	local hook_name="$1"
 
 	echo "Calling $hook_name"
-	$hook_name
+	(cd $BOARD_DIR && $hook_name)
 }
 
 # defined hooks

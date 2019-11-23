@@ -8,6 +8,8 @@ TARGET_ARCH=armhf
 : ${ROOT_SIZE=2048M}
 : ${SWAP_SIZE=1024M}
 : ${ROOTFS_TYPE=ext4}
+: ${DISKLABEL_TYPE=dos}
+: ${DISKLABEL_FIRST_LBA=2048}
 
 DTB=
 
@@ -60,6 +62,9 @@ dev="$2"
 
 hook pre_partitioning
 
+(
+echo "label: $DISKLABEL_TYPE"
+echo "first-lba: $DISKLABEL_FIRST_LBA"
 if [ "$USE_LVM" = yes ]; then
 	cat <<-EOF
 	,256M,83,*
@@ -71,10 +76,12 @@ else
 		echo ",$SWAP_SIZE,82"
 	fi
 	echo ",$ROOT_SIZE"
-fi | sfdisk -f -u S $dev
-sleep 1
+fi
+) | flock $dev sfdisk -f -u S $dev
 
 hook post_partitioning
+
+sleep 1
 
 _devices=($(lsblk -n -o name -p -r $dev))
 
