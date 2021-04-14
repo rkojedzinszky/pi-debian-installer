@@ -142,12 +142,6 @@ fi
 # generate bootEnv.txt
 echo "root=UUID=$rootuuid" > "$rootdir/boot/bootEnv.txt"
 
-if [ $(dpkg --print-architecture) != $TARGET_ARCH ]; then
-	mkdir -p $rootdir/usr/bin/
-	cp /usr/bin/qemu-arm-static $rootdir/usr/bin/ # XXX
-	CLEANUP+=("rm $rootdir/usr/bin/qemu-arm-static")
-fi
-
 hook pre_debootstrap
 
 debootstrap --components=main,contrib,non-free --arch $TARGET_ARCH $TARGET_DIST $rootdir $DEB_MIRROR
