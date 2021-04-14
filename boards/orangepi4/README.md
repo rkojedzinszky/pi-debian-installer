@@ -15,11 +15,10 @@ $ ./tools/trust_merger ./trust.ini
 
 uboot.img
 ```
-$ cp bin/rk33/rk3399_bl31_v1.32.elf ../u-boot/bl31.elf
 $ cd ../u-boot
 $ # u-boot config:
 $ make evb-rk3399_defconfig
 $ sed -i -e '/^CONFIG_DEFAULT_FDT_FILE/s,=.*,="rockchip/rk3399-orangepi-4.dtb",' .config
-$ make -j4
-$ ../rkbin/tools/loaderimage --pack --uboot u-boot-dtb.bin uboot.img
+$ make -j4 u-boot-dtb.bin
+$ ../rkbin/tools/loaderimage --pack --uboot u-boot-dtb.bin uboot.img 0x00200000
 ```
