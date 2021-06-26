@@ -16,11 +16,9 @@ DTB=
 case "$ROOTFS_TYPE" in
 	ext4)
 		mkrootfs="mkfs.ext4 -F"
-		rootfsextra=",commit=600"
 		;;
 	xfs)
 		mkrootfs="mkfs.xfs -f"
-		rootfsextra=""
 		;;
 	*)
 		echo "Root filesystem type '$ROOTFS_TYPE' not supported"
@@ -164,8 +162,8 @@ fi
 echo "$board" > $rootdir/etc/hostname
 
 cat <<EOF > $rootdir/etc/fstab
-UUID=$bootuuid	/boot		ext3	rw,commit=600		0	2
-UUID=$rootuuid	/		$ROOTFS_TYPE	rw$rootfsextra		0	1
+UUID=$bootuuid	/boot		ext3	rw		0	2
+UUID=$rootuuid	/		$ROOTFS_TYPE	rw		0	1
 EOF
 if [ -n "$swapuuid" ]; then
 	echo "UUID=$swapuuid	none		swap	sw			0	0" >> $rootdir/etc/fstab
