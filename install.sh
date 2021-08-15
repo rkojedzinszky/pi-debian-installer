@@ -1,12 +1,11 @@
 #!/bin/bash
 
 TARGET_ARCH=armhf
-: ${TARGET_DIST=buster}
+
+: ${TARGET_DIST=bullseye}
 : ${DEB_MIRROR=http://deb.debian.org/debian/}
-: ${PACKAGES=firmware-brcm80211,e2fsprogs,vim,u-boot-tools,cpufrequtils,initramfs-tools,xfsprogs,ssh}
-: ${USE_LVM=yes}
+: ${PACKAGES=firmware-brcm80211,e2fsprogs,vim,u-boot-tools,initramfs-tools,xfsprogs,ssh}
 : ${ROOT_SIZE=2048M}
-: ${SWAP_SIZE=1024M}
 : ${ROOTFS_TYPE=ext4}
 : ${DISKLABEL_TYPE=dos}
 : ${DISKLABEL_FIRST_LBA=2048}
@@ -63,18 +62,8 @@ hook pre_partitioning
 (
 echo "label: $DISKLABEL_TYPE"
 echo "first-lba: $DISKLABEL_FIRST_LBA"
-if [ "$USE_LVM" = yes ]; then
-	cat <<-EOF
-	,256M,83,*
-	,,8e,*
-	EOF
-else
-	echo ",256M,83,*"
-	if [ "$SWAP_SIZE" -gt 0 ]; then
-		echo ",$SWAP_SIZE,82"
-	fi
-	echo ",$ROOT_SIZE"
-fi
+echo ",256M,83,*"
+echo ",$ROOT_SIZE"
 ) | flock $dev sfdisk -f -u S $dev
 
 hook post_partitioning
@@ -84,36 +73,10 @@ sleep 1
 _devices=($(lsblk -n -o name -p -r $dev))
 
 bootdev=${_devices[1]}
-swapdev=
-if [ "$USE_LVM" = yes ]; then
-	physdev=${_devices[2]}
-	vgname="$board-$RANDOM"
-	vgcreate -f "$vgname" "$physdev"
-	CLEANUP+=("vgchange -a n $vgname")
-
-	if [ "$SWAP_SIZE" -gt 0 ]; then
-		lvcreate --yes -W y -n swap -L $SWAP_SIZE $vgname
-		swapdev="/dev/$vgname/swap"
-	fi
-	lvcreate --yes -W y -n root -L $ROOT_SIZE $vgname
-	rootdev="/dev/$vgname/root"
-	PACKAGES="$PACKAGES,lvm2"
-else
-	if [ "$SWAP_SIZE" -gt 0 ]; then
-		swapdev=${_devices[2]}
-		rootdev=${_devices[3]}
-	else
-		rootdev=${_devices[2]}
-	fi
-fi
+rootdev=${_devices[2]}
 
 mkfs.ext3 -F $bootdev
 tune2fs -o discard $bootdev
-swapuuid=
-if [ -n "$swapdev" ]; then
-	mkswap -f $swapdev
-	swapuuid=$(get_uuid $swapdev)
-fi
 $mkrootfs $rootdev
 
 bootuuid=$(get_uuid $bootdev)
@@ -144,6 +107,9 @@ hook pre_debootstrap
 
 debootstrap --components=main,contrib,non-free --arch $TARGET_ARCH $TARGET_DIST $rootdir $DEB_MIRROR
 
+if [ "$KERNEL" != "" ]; then
+	PACKAGES="$PACKAGES,$KERNEL"
+fi
 chroot $rootdir apt-get install -f -y ${PACKAGES//,/ }
 
 # generate boot.scr
@@ -165,11 +131,6 @@ cat <<EOF > $rootdir/etc/fstab
 UUID=$bootuuid	/boot		ext3	rw		0	2
 UUID=$rootuuid	/		$ROOTFS_TYPE	rw		0	1
 EOF
-if [ -n "$swapuuid" ]; then
-	echo "UUID=$swapuuid	none		swap	sw			0	0" >> $rootdir/etc/fstab
-fi
-
-echo 'GOVERNOR="conservative"' > $rootdir/etc/default/cpufrequtils
 
 echo "root:pi" | chroot $rootdir chpasswd
 
