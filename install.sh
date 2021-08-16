@@ -110,6 +110,11 @@ debootstrap --components=main,contrib,non-free --arch $TARGET_ARCH $TARGET_DIST 
 if [ "$KERNEL" != "" ]; then
 	PACKAGES="$PACKAGES,$KERNEL"
 fi
+case "$TARGET_DIST" in
+	bullseye)
+		PACKAGES="$PACKAGES,python-is-python3"
+		;;
+esac
 chroot $rootdir apt-get install -f -y ${PACKAGES//,/ }
 
 # generate boot.scr
