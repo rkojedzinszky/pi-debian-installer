@@ -70,7 +70,7 @@ hook post_partitioning
 
 sleep 1
 
-_devices=($(lsblk -n -o name -p -r $dev))
+_devices=($(lsblk -n -o name -p -r $dev | sort))
 
 bootdev=${_devices[1]}
 rootdev=${_devices[2]}
