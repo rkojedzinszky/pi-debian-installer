@@ -62,7 +62,7 @@ hook pre_partitioning
 (
 echo "label: $DISKLABEL_TYPE"
 echo "first-lba: $DISKLABEL_FIRST_LBA"
-echo ",256M,83,*"
+echo ",256M,,*"
 echo ",$ROOT_SIZE"
 ) | flock $dev sfdisk -f -u S $dev
 
