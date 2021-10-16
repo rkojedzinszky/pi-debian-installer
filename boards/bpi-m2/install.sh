@@ -1,3 +1,3 @@
 # shell fragment
 
-KERNEL=linux-image-armmp
+KERNEL=linux-image-armmp-lpae
