@@ -1,7 +1,6 @@
 # shell fragment
 
 TARGET_ARCH=arm64
-KERNEL=linux-image-arm64
 
 DISKLABEL_TYPE=gpt
 DISKLABEL_FIRST_LBA=32768
