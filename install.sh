@@ -112,7 +112,7 @@ if [ "$KERNEL" != "" ]; then
 fi
 case "$TARGET_DIST" in
 	bullseye)
-		PACKAGES="$PACKAGES,python-is-python3"
+		PACKAGES="$PACKAGES,python-is-python3,systemd-timesyncd"
 		;;
 esac
 chroot $rootdir apt-get install -f -y ${PACKAGES//,/ }
