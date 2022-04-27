@@ -117,6 +117,8 @@ case "$TARGET_DIST" in
 esac
 chroot $rootdir apt-get install -f -y ${PACKAGES//,/ }
 
+hook pre_mkbootscr
+
 # generate boot.scr
 chroot $rootdir mkimage -T script -A arm -d /boot/boot.cmd /boot/boot.scr
 

@@ -24,6 +24,11 @@ pre_debootstrap()
 	:
 }
 
+pre_mkbootscr()
+{
+	:
+}
+
 post_debootstrap()
 {
 	:
@@ -56,4 +61,10 @@ fi
 
 if [ -f $BOARD_DIR/install.sh ]; then
 	. $BOARD_DIR/install.sh
+fi
+
+if [ -n "$TARGET_ARCH" ]; then
+	if [ -f "$BOARD_DIR/.${TARGET_ARCH}/install.sh" ]; then
+		. $BOARD_DIR/.${TARGET_ARCH}/install.sh
+	fi
 fi
