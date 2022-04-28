@@ -57,6 +57,10 @@ dev="$2"
 
 . boards/common/install.sh
 
+if [ -f local-install.sh ]; then
+	. local-install.sh
+fi
+
 hook pre_partitioning
 
 (
@@ -147,3 +151,5 @@ U_BOOT="$BOARD_DIR/u-boot-sunxi-with-spl.bin"
 if [ -f "$U_BOOT" ]; then
 	dd if="$U_BOOT" of=$dev bs=1k seek=8
 fi
+
+hook customize

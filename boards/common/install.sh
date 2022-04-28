@@ -48,6 +48,11 @@ install_kernel()
 	esac
 }
 
+customize()
+{
+	:
+}
+
 if [ "$board" = "common" ]; then
 	echo "Board type '$board' is reserved"
 	exit 1
