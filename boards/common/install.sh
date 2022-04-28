@@ -69,7 +69,7 @@ if [ -f $BOARD_DIR/install.sh ]; then
 fi
 
 if [ -n "$TARGET_ARCH" ]; then
-	if [ -f "$BOARD_DIR/.${TARGET_ARCH}/install.sh" ]; then
-		. $BOARD_DIR/.${TARGET_ARCH}/install.sh
+	if [ -f "boards/.${TARGET_ARCH}/install.sh" ]; then
+		. boards/.${TARGET_ARCH}/install.sh
 	fi
 fi
