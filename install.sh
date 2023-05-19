@@ -5,6 +5,7 @@ TARGET_ARCH=armhf
 : ${TARGET_DIST=bullseye}
 : ${DEB_MIRROR=http://deb.debian.org/debian/}
 : ${PACKAGES=firmware-brcm80211,e2fsprogs,vim,u-boot-tools,initramfs-tools,xfsprogs,ssh}
+: ${BOOT_SIZE=512M}
 : ${ROOT_SIZE=2048M}
 : ${ROOTFS_TYPE=ext4}
 : ${DISKLABEL_TYPE=dos}
@@ -66,7 +67,7 @@ hook pre_partitioning
 (
 echo "label: $DISKLABEL_TYPE"
 echo "first-lba: $DISKLABEL_FIRST_LBA"
-echo ",256M,,*"
+echo ",${BOOT_SIZE},,*"
 echo ",$ROOT_SIZE"
 ) | flock $dev sfdisk -f -u S $dev
 
