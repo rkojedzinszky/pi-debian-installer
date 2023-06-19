@@ -36,8 +36,14 @@ post_debootstrap()
 
 install_kernel()
 {
-	case ${TARGET_ARCH} in
-		armhf|arm64)
+	case ${TARGET_DIST},${TARGET_ARCH} in
+		bookworm,armhf)
+			chroot $rootdir apt-get install -y linux-image-armmp
+			;;
+		bookworm,arm64)
+			chroot $rootdir apt-get install -y linux-image-arm64
+			;;
+		*,armhf|*,arm64)
 			# install krichy server kernel
 			chroot $rootdir apt-get install -y --no-install-recommends gnupg2 dirmngr
 			chroot $rootdir apt-key adv --keyserver keys.openpgp.org --recv-keys 0x2ADADF37C3C302A7BADABCC10D946CE6DD9F32EB

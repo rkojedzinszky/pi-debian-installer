@@ -2,9 +2,9 @@
 
 TARGET_ARCH=armhf
 
-: ${TARGET_DIST=bullseye}
+: ${TARGET_DIST=bookworm}
 : ${DEB_MIRROR=http://deb.debian.org/debian/}
-: ${PACKAGES=firmware-brcm80211,e2fsprogs,vim,u-boot-tools,initramfs-tools,xfsprogs,ssh}
+: ${PACKAGES=systemd-sysv,ifupdown,ssh,libpam-systemd,dbus,e2fsprogs,xfsprogs,u-boot-tools,initramfs-tools,vim}
 : ${BOOT_SIZE=512M}
 : ${ROOT_SIZE=2048M}
 : ${ROOTFS_TYPE=ext4}
@@ -100,27 +100,25 @@ export LC_ALL=C LANGUAGE=C LANG=C
 export DEBIAN_FRONTEND=noninteractive
 export DEBCONF_NONINTERACTIVE_SEEN=true
 
-tar cf - --owner=root:0 --group=root:0 -C boards/common/root . | tar xf - --no-same-permissions -C "$rootdir"
-if [ -d "$BOARD_DIR/root" ]; then
-	tar cf - --owner=root:0 --group=root:0 -C "$BOARD_DIR/root" . | tar xf - --no-same-permissions -C "$rootdir"
-fi
-
 # generate bootEnv.txt
 echo "root=UUID=$rootuuid" > "$rootdir/boot/bootEnv.txt"
 
 hook pre_debootstrap
 
-debootstrap --components=main,contrib,non-free --arch $TARGET_ARCH $TARGET_DIST $rootdir $DEB_MIRROR
-
 if [ "$KERNEL" != "" ]; then
 	PACKAGES="$PACKAGES,$KERNEL"
 fi
 case "$TARGET_DIST" in
-	bullseye)
+	bullseye|bookworm)
 		PACKAGES="$PACKAGES,python-is-python3,systemd-timesyncd"
 		;;
 esac
-chroot $rootdir apt-get install -f -y ${PACKAGES//,/ }
+debootstrap --variant=minbase --include=${PACKAGES} --components=main,contrib --arch $TARGET_ARCH $TARGET_DIST $rootdir $DEB_MIRROR
+
+tar cf - --owner=root:0 --group=root:0 -C boards/common/root . | tar xhf - --no-same-permissions -C "$rootdir"
+if [ -d "$BOARD_DIR/root" ]; then
+	tar cf - --owner=root:0 --group=root:0 -C "$BOARD_DIR/root" . | tar xhf - --no-same-permissions -C "$rootdir"
+fi
 
 hook pre_mkbootscr
 

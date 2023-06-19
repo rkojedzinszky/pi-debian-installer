@@ -6,7 +6,7 @@ if test -e ${devtype} ${devnum} ${prefix}${envFile}; then
 	env import -t ${load_addr} ${filesize}
 fi
 
-setenv bootargs console=ttyS0,115200 console=tty1 root=${root} rw rootwait panic=10 ${extra}
+setenv bootargs net.ifnames=0 console=ttyS0,115200 console=tty1 root=${root} rw rootwait panic=10 ${extra}
 load ${devtype} ${devnum}:${bootpart} ${fdt_addr_r} ${prefix}dtb/${fdtfile}
 load ${devtype} ${devnum}:${bootpart} ${kernel_addr_r} ${prefix}${kernel}
 load ${devtype} ${devnum}:${bootpart} ${ramdisk_addr_r} ${prefix}${uinitrd}
