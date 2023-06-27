@@ -1,0 +1,67 @@
+#include "rk3328-rock64.dts"
+
+/ {
+	/delete-node/ ir-receiver;
+	/delete-node/ spdif-sound;
+	/delete-node/ spdif-dit;
+};
+
+&analog_sound {
+	status = "disabled";
+};
+
+&codec {
+	status = "disabled";
+};
+
+&hdmi {
+	status = "disabled";
+};
+
+&hdmi_sound {
+	status = "disabled";
+};
+
+&hdmiphy {
+	status = "disabled";
+};
+
+&i2s0 {
+	status = "disabled";
+};
+
+&i2s1 {
+	status = "disabled";
+};
+
+&spdif {
+	status = "disabled";
+};
+
+&u2phy {
+	status = "disabled";
+};
+
+&usb20_otg {
+	status = "disabled";
+};
+
+&usbdrd3 {
+	status = "disabled";
+};
+
+&usb_host0_ehci {
+	status = "disabled";
+};
+
+&usb_host0_ohci {
+	status = "disabled";
+};
+
+&vop {
+	status = "disabled";
+};
+
+&vop_mmu {
+	status = "disabled";
+};
