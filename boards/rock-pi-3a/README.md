@@ -1,9 +1,4 @@
 # Bootloader
 
-From https://github.com/radxa/rockchip-bsp.git
+Generate by `With U-Boot SPL` in ../README.rockchip.generic.md
 
-```sh
-$ build/mk-uboot.sh rk3568-rock-3a
-```
-
-Find output files at out/u-boot/.
