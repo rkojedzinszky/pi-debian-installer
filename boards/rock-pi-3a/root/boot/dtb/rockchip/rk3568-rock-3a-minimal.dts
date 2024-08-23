@@ -57,10 +57,6 @@
 	status = "disabled";
 };
 
-&i2s2_2ch {
-	status = "disabled";
-};
-
 &pcie2x1 {
 	status = "disabled";
 };
