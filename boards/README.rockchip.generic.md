@@ -9,16 +9,18 @@ $ git clone https://github.com/rockchip-linux/rkbin.git
 
 ## Without miniloader
 
-### With U-Boot SPL
+### Option 1
 
 ```sh
 $ cd u-boot
 $ make <defconfig>
-$ export ROCKCHIP_TPL=../rkbin/bin/rk*/rk*_ddr_.bin
-$ make idbloader.img u-boot.itb
+$ export BL31=../rkbin/bin/rk*/rk*bl31*elf ROCKCHIP_TPL=../rkbin/bin/rk*/rk*_ddr_.bin
+$ make
 ```
 
-### With RKBIN DDR and BL31
+Result files are idbloader.img and u-boot.itb
+
+### Option 2
 
 Generate `idbloader.img` and `u-boot.itb`:
 
