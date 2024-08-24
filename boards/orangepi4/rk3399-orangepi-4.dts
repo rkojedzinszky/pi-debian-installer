@@ -1,0 +1,20 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+
+#include "rk3399-orangepi.dts"
+
+/ {
+	model = "Orange Pi 4 RK3399 Board";
+
+	aliases {
+		spi0 = &spi0;
+		spi1 = &spi1;
+		spi2 = &spi2;
+		spi3 = &spi3;
+		spi4 = &spi4;
+		spi5 = &spi5;
+	};
+};
+
+&i2c4 {
+	status = "disabled";
+};

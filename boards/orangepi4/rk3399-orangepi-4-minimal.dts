@@ -1,0 +1,111 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+
+#include "rk3399-orangepi-4.dts"
+
+/ {
+	/delete-node/ display-subsystem;
+};
+
+&gpu {
+	status = "disabled";
+};
+
+&hdmi {
+	status = "disabled";
+};
+
+&hdmi_sound {
+	status = "disabled";
+};
+
+&i2c1 {
+	status = "disabled";
+};
+
+&i2c3 {
+	status = "disabled";
+};
+
+&pwm0 {
+	status = "disabled";
+};
+
+&pwm2 {
+	status = "disabled";
+};
+
+&saradc {
+	status = "disabled";
+};
+
+&sdio0 {
+	status = "disabled";
+};
+
+&tcphy0 {
+	status = "disabled";
+};
+
+&tcphy1 {
+	status = "disabled";
+};
+
+&u2phy0 {
+	status = "disabled";
+};
+
+&u2phy1 {
+	status = "disabled";
+};
+
+&uart0 {
+	status = "disabled";
+};
+
+&usb_host0_ehci {
+	status = "disabled";
+};
+
+&usb_host0_ohci {
+	status = "disabled";
+};
+
+&usb_host1_ehci {
+	status = "disabled";
+};
+
+&usb_host1_ohci {
+	status = "disabled";
+};
+
+&usbdrd3_0 {
+	status = "disabled";
+};
+
+&usbdrd_dwc3_0 {
+	status = "disabled";
+};
+
+&usbdrd3_1 {
+	status = "disabled";
+};
+
+&usbdrd_dwc3_1 {
+	status = "disabled";
+};
+
+&vopb {
+	status = "disabled";
+};
+
+&vopb_mmu {
+	status = "disabled";
+};
+
+&vopl {
+	status = "disabled";
+};
+
+&vopl_mmu {
+	status = "disabled";
+};
