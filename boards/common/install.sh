@@ -36,20 +36,12 @@ post_debootstrap()
 
 install_kernel()
 {
-	case ${TARGET_DIST},${TARGET_ARCH} in
-		bookworm,armhf)
+	case ${TARGET_ARCH} in
+		armhf)
 			chroot $rootdir apt-get install -y linux-image-armmp
 			;;
-		bookworm,arm64)
+		arm64)
 			chroot $rootdir apt-get install -y linux-image-arm64
-			;;
-		*,armhf|*,arm64)
-			# install krichy server kernel
-			chroot $rootdir apt-get install -y --no-install-recommends gnupg2 dirmngr
-			chroot $rootdir apt-key adv --keyserver keys.openpgp.org --recv-keys 0x2ADADF37C3C302A7BADABCC10D946CE6DD9F32EB
-			echo "deb http://apt.srv.kojedz.in/ ${TARGET_DIST} main" > $rootdir/etc/apt/sources.list.d/apt.srv.kojedz.in.list
-			chroot $rootdir apt-get update
-			chroot $rootdir apt-get -f -y install linux-image-5.15
 			;;
 	esac
 }

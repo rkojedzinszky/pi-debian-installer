@@ -2,12 +2,12 @@
 
 TARGET_ARCH=armhf
 
-: ${TARGET_DIST=bookworm}
+: ${TARGET_DIST=trixie}
 : ${DEB_MIRROR=http://deb.debian.org/debian/}
-: ${PACKAGES=systemd-sysv,ifupdown,ssh,libpam-systemd,dbus,e2fsprogs,xfsprogs,u-boot-tools,initramfs-tools,vim}
+: ${PACKAGES=systemd-sysv,ifupdown,ssh,libpam-systemd,dbus,e2fsprogs,xfsprogs,u-boot-tools,initramfs-tools,vim,systemd-timesyncd}
 : ${BOOT_SIZE=512M}
-: ${ROOT_SIZE=2048M}
-: ${ROOTFS_TYPE=ext4}
+: ${ROOT_SIZE=16G}
+: ${ROOTFS_TYPE=xfs}
 : ${DISKLABEL_TYPE=dos}
 : ${DISKLABEL_FIRST_LBA=2048}
 
@@ -108,11 +108,11 @@ hook pre_debootstrap
 if [ "$KERNEL" != "" ]; then
 	PACKAGES="$PACKAGES,$KERNEL"
 fi
-case "$TARGET_DIST" in
-	bullseye|bookworm)
-		PACKAGES="$PACKAGES,python-is-python3,systemd-timesyncd"
-		;;
-esac
+
+if [[ "$TARGET_DIST" =~ bullseye|bookworm ]]; then
+	PACKAGES="$PACKAGES,python-is-python3"
+fi
+
 debootstrap --variant=minbase --include=${PACKAGES} --components=main,contrib --arch $TARGET_ARCH $TARGET_DIST $rootdir $DEB_MIRROR
 
 tar cf - --owner=root:0 --group=root:0 -C boards/common/root . | tar xhf - --no-same-permissions -C "$rootdir"
