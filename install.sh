@@ -4,7 +4,7 @@ TARGET_ARCH=armhf
 
 : ${TARGET_DIST=trixie}
 : ${DEB_MIRROR=http://deb.debian.org/debian/}
-: ${PACKAGES=systemd-sysv,ifupdown,ssh,libpam-systemd,dbus,e2fsprogs,xfsprogs,u-boot-tools,initramfs-tools,vim,systemd-timesyncd}
+: ${PACKAGES=systemd-sysv,ssh,libpam-systemd,dbus,e2fsprogs,xfsprogs,u-boot-tools,initramfs-tools,vim,systemd-timesyncd}
 : ${BOOT_SIZE=512M}
 : ${ROOT_SIZE=16G}
 : ${ROOTFS_TYPE=xfs}
@@ -144,7 +144,7 @@ EOF
 
 echo "root:pi" | chroot $rootdir chpasswd
 
-chroot $rootdir systemctl enable systemd-timesyncd
+chroot $rootdir systemctl enable systemd-timesyncd systemd-networkd
 
 U_BOOT="$BOARD_DIR/u-boot-sunxi-with-spl.bin"
 if [ -f "$U_BOOT" ]; then
