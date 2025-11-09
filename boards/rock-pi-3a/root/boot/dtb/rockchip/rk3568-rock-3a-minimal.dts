@@ -44,11 +44,6 @@
 	/delete-node/ codec;
 };
 
-//&i2c5 {
-//	status = "disabled";
-//	/delete-node/ rtc;
-//};
-
 &i2s0_8ch {
 	status = "disabled";
 };
