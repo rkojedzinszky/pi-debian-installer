@@ -9,27 +9,19 @@ $ git clone https://github.com/rockchip-linux/rkbin.git
 
 ## Without miniloader
 
-### Option 1
-
-```sh
-$ cd u-boot
-$ make <defconfig>
-$ export BL31=../rkbin/bin/rk*/rk*bl31*elf ROCKCHIP_TPL=../rkbin/bin/rk*/rk*_ddr_.bin
-$ make
-```
-
-Result files are idbloader.img and u-boot.itb
-
-### Option 2
-
 Generate `idbloader.img` and `u-boot.itb`:
 
 ```sh
 $ cd u-boot
 $ make <defconfig>
-$ export BL31=../rkbin/bin/rkxx/*.elf
-$ make u-boot.itb spl/u-boot-spl.bin
-$ ./tools/mkimage -T rksd -n <soc> -d ../rkbin/bin/rkxx/*ddr*.bin:spl/u-boot-spl.bin idbloader.img
+$ BL31=../rkbin/bin/rk*/rk*bl31*elf ROCKCHIP_TPL=../rkbin/bin/rk*/rk*_ddr_.bin make -j4
+```
+
+Install them like:
+
+```sh
+dd if=idbloader.img of=$dev seek=64
+dd if=u-boot.itb of=$dev seek=16384
 ```
 
 ## With rockchip miniloader
@@ -56,4 +48,12 @@ $ cd ../u-boot
 $ make <defconfig>
 $ make u-boot-dtb.bin
 $ ../rkbin/tools/loaderimage --pack --uboot u-boot-dtb.bin uboot.img 0x00200000
+```
+
+Install them like:
+
+```sh
+dd if=idbloader.img of=$dev seek=64
+dd if=uboot.img of=$dev seek=16384
+dd if=trust.img of=$dev seek=24576
 ```
