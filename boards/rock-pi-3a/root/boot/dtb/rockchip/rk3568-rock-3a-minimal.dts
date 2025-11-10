@@ -1,11 +1,5 @@
 #include "rk3568-rock-3a.dts"
 
-/ {
-	/delete-node/ hdmi-con;
-	/delete-node/ rk809-sound;
-	/delete-node/ display-subsystem;
-};
-
 &combphy0 {
 	status = "disabled";
 };
@@ -15,40 +9,6 @@
 };
 
 &combphy2 {
-	status = "disabled";
-};
-
-&gpu {
-	status = "disabled";
-};
-
-&hdmi {
-	status = "disabled";
-};
-
-&hdmi_in {
-	status = "disabled";
-	/delete-node/ endpoint;
-};
-
-&hdmi_out {
-	status = "disabled";
-	/delete-node/ endpoint;
-};
-
-&hdmi_sound {
-	status = "disabled";
-};
-
-&rk809 {
-	/delete-node/ codec;
-};
-
-&i2s0_8ch {
-	status = "disabled";
-};
-
-&i2s1_8ch {
 	status = "disabled";
 };
 
@@ -62,16 +22,6 @@
 
 &pcie3x2 {
 	status = "disabled";
-};
-
-&saradc {
-	status = "disabled";
-};
-
-&uart1 {
-	status = "disabled";
-
-	/delete-node/ bluetooth;
 };
 
 &usb_host0_ehci {
@@ -120,16 +70,4 @@
 
 &usb2phy1_otg {
 	status = "disabled";
-};
-
-&vop {
-	status = "disabled";
-};
-
-&vop_mmu {
-	status = "disabled";
-};
-
-&vp0 {
-	/delete-node/ endpoint@ROCKCHIP_VOP2_EP_HDMI0;
 };
