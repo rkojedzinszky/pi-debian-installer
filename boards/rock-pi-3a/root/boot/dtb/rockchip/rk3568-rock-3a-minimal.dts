@@ -12,6 +12,56 @@
 	status = "disabled";
 };
 
+&gpu {
+	status = "disabled";
+};
+
+&vpu {
+	status = "disabled";
+};
+
+&vdpu_mmu {
+	status = "disabled";
+};
+
+&rga {
+	status = "disabled";
+};
+
+&vepu {
+	status = "disabled";
+};
+
+&vepu_mmu {
+	status = "disabled";
+};
+
+&vdda0v9_image {
+	regulator-always-on;
+};
+
+&vcca1v8_image {
+	regulator-always-on;
+};
+
+&hdmi {
+	status = "disabled";
+};
+
+&hdmi_in {
+	status = "disabled";
+	/delete-node/ hdmi_in_vp0;
+};
+
+&hdmi_out {
+	status = "disabled";
+	/delete-node/ hdmi_out_con;
+};
+
+&hdmi_sound {
+	status = "disabled";
+};
+
 &pcie2x1 {
 	status = "disabled";
 };
@@ -69,5 +119,13 @@
 };
 
 &usb2phy1_otg {
+	status = "disabled";
+};
+
+&vop {
+	status = "disabled";
+};
+
+&vop_mmu {
 	status = "disabled";
 };
