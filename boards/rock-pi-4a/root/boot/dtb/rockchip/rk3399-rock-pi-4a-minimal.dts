@@ -1,48 +1,8 @@
-// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-/*
- * Copyright (c) 2019 Akash Gajjar <Akash_Gajjar@mentor.com>
- * Copyright (c) 2019 Pragnesh Patel <Pragnesh_Patel@mentor.com>
- */
-
-/dts-v1/;
 #include "rk3399-rock-pi-4a.dts"
 
-/ {
-	/delete-node/ sound;
-	/delete-node/ sound-dit;
-	/delete-node/ spdif-dit;
-};
-
-&gpu {
-	status = "disabled";
-};
-
-&hdmi_sound {
-	status = "disabled";
-};
-
-&i2c1 {
-	status = "disabled";
-};
-
-&i2c3 {
-	status = "disabled";
-};
-
-&i2c4 {
-	status = "disabled";
-};
-
-&i2s0 {
-	status = "disabled";
-};
-
-&i2s1 {
-	status = "disabled";
-};
-
-&i2s2 {
-	status = "disabled";
+&gmac {
+	tx-fifo-depth = <2048>;
+	rx-fifo-depth = <4096>;
 };
 
 &pcie0 {
@@ -50,24 +10,6 @@
 };
 
 &pcie_phy {
-	status = "disabled";
-};
-
-&saradc {
-	status = "disabled";
-};
-
-&spdif {
-	status = "disabled";
-
-	/delete-node/ port;
-};
-
-&tcphy0 {
-	status = "disabled";
-};
-
-&tcphy1 {
 	status = "disabled";
 };
 
@@ -111,18 +53,3 @@
 	status = "disabled";
 };
 
-&vopb {
-	status = "disabled";
-};
-
-&vopb_mmu {
-	status = "disabled";
-};
-
-&vopl {
-	status = "disabled";
-};
-
-&vopl_mmu {
-	status = "disabled";
-};
