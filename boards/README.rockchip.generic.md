@@ -22,6 +22,12 @@ If it fails with an error requiring a rockchip-tpl, then recompile with:
 $ BL31=../rkbin/bin/rk*/rk*bl31*elf ROCKCHIP_TPL=../rkbin/bin/rk*/rk*_ddr_.bin make -j4
 ```
 
+Embedding rkbin TPL explicitly in `idbloader.img`:
+
+```sh
+$ ./tools/mkimage -T rksd -n <soc> -d ../rkbin/bin/rkxx/*ddr*.bin:spl/u-boot-spl.bin idbloader.img
+```
+
 Install them like:
 
 ```sh
