@@ -14,6 +14,11 @@ Generate `idbloader.img` and `u-boot.itb`:
 ```sh
 $ cd u-boot
 $ make <defconfig>
+$ BL31=../rkbin/bin/rk*/rk*bl31*elf make -j4
+```
+
+If it fails with an error requiring a rockchip-tpl, then recompile with:
+```sh
 $ BL31=../rkbin/bin/rk*/rk*bl31*elf ROCKCHIP_TPL=../rkbin/bin/rk*/rk*_ddr_.bin make -j4
 ```
 
