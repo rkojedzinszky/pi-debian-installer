@@ -1,10 +1,5 @@
 #include "rk3399-rock-pi-4a.dts"
 
-&gmac {
-	tx-fifo-depth = <2048>;
-	rx-fifo-depth = <4096>;
-};
-
 &pcie0 {
 	status = "disabled";
 };
