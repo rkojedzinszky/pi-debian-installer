@@ -4,7 +4,7 @@ TARGET_ARCH=armhf
 
 : ${TARGET_DIST=trixie}
 : ${DEB_MIRROR=http://deb.debian.org/debian/}
-: ${PACKAGES=systemd-sysv,ssh,libpam-systemd,dbus,e2fsprogs,xfsprogs,u-boot-tools,initramfs-tools,vim,systemd-timesyncd}
+: ${PACKAGES=systemd-sysv,ssh,libpam-systemd,dbus,e2fsprogs,xfsprogs,u-boot-tools,initramfs-tools,vim,systemd-timesyncd,zstd}
 : ${BOOT_SIZE=512M}
 : ${ROOT_SIZE=16G}
 : ${ROOTFS_TYPE=xfs}
