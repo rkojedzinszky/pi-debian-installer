@@ -152,3 +152,6 @@ if [ -f "$U_BOOT" ]; then
 fi
 
 hook customize
+
+# tune initramfs MODULES
+sed -i -e "/^MODULES=/s/=.*/=dep/" "$rootdir/etc/initramfs-tools/initramfs.conf"
