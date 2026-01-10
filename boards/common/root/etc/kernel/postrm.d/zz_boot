@@ -1,8 +1,0 @@
-#!/bin/sh
-
-version="$1"
-
-INITRD=initrd.img-$version
-UINITRD=u$INITRD
-
-test -f /boot/$INITRD || rm -f /boot/$UINITRD

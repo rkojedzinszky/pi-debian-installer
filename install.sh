@@ -4,8 +4,8 @@ TARGET_ARCH=armhf
 
 : ${TARGET_DIST=trixie}
 : ${DEB_MIRROR=http://deb.debian.org/debian/}
-: ${PACKAGES=systemd-sysv,ssh,libpam-systemd,dbus,e2fsprogs,xfsprogs,u-boot-tools,initramfs-tools,vim,systemd-timesyncd,zstd}
-: ${BOOT_SIZE=512M}
+: ${PACKAGES=systemd-sysv,ssh,libpam-systemd,dbus,e2fsprogs,xfsprogs,dosfstools,grub-efi,initramfs-tools,vim,systemd-timesyncd,zstd}
+: ${ESP_SIZE=100M}
 : ${ROOT_SIZE=16G}
 : ${ROOTFS_TYPE=xfs}
 : ${DISKLABEL_TYPE=dos}
@@ -67,9 +67,9 @@ hook pre_partitioning
 (
 echo "label: $DISKLABEL_TYPE"
 echo "first-lba: $DISKLABEL_FIRST_LBA"
-echo ",${BOOT_SIZE},,*"
+echo ",${ESP_SIZE},U,*"
 echo ",$ROOT_SIZE"
-) | flock $dev sfdisk -f -u S $dev
+) | sfdisk --lock -f -u S $dev
 
 hook post_partitioning
 
@@ -77,14 +77,13 @@ sleep 1
 
 _devices=($(lsblk -n -o name -p -r $dev | sort))
 
-bootdev=${_devices[1]}
+espdev=${_devices[1]}
 rootdev=${_devices[2]}
 
-mkfs.ext3 -F $bootdev
-tune2fs -o discard $bootdev
+mkdosfs -F 32 $espdev
 $mkrootfs $rootdev
 
-bootuuid=$(get_uuid $bootdev)
+espuuid=$(get_uuid $espdev)
 rootuuid=$(get_uuid $rootdev)
 
 rootdir=$(mktemp -d)
@@ -92,22 +91,15 @@ CLEANUP+=("rmdir $rootdir")
 
 mount $rootdev $rootdir
 CLEANUP+=("umount $rootdir")
-mkdir $rootdir/boot
-mount -o nobarrier $bootdev $rootdir/boot
-CLEANUP+=("umount $rootdir/boot")
+mkdir -p $rootdir/boot/efi
+mount $espdev $rootdir/boot/efi
+CLEANUP+=("umount $rootdir/boot/efi")
 
 export LC_ALL=C LANGUAGE=C LANG=C
 export DEBIAN_FRONTEND=noninteractive
 export DEBCONF_NONINTERACTIVE_SEEN=true
 
-# generate bootEnv.txt
-echo "root=UUID=$rootuuid" > "$rootdir/boot/bootEnv.txt"
-
 hook pre_debootstrap
-
-if [ "$KERNEL" != "" ]; then
-	PACKAGES="$PACKAGES,$KERNEL"
-fi
 
 if [[ "$TARGET_DIST" =~ bullseye|bookworm ]]; then
 	PACKAGES="$PACKAGES,python-is-python3"
@@ -120,26 +112,26 @@ if [ -d "$BOARD_DIR/root" ]; then
 	tar cf - --owner=root:0 --group=root:0 -C "$BOARD_DIR/root" . | tar xhf - --no-same-permissions -C "$rootdir"
 fi
 
-hook pre_mkbootscr
-
-# generate boot.scr
-chroot $rootdir mkimage -T script -A arm -d /boot/boot.cmd /boot/boot.scr
-
 hook post_debootstrap
 
 hook install_kernel
 
-# prepare dtb
-mkdir -p $rootdir/boot/dtb
-if [ -n "$DTB" ]; then
-	cp $rootdir$DTB $rootdir/boot/dtb/
-fi
+# tune and setup grub
+sed -i -e "/^GRUB_CMDLINE_LINUX=/s/=.*/=\"net.ifnames=0\"/" "$rootdir/etc/default/grub"
+mount --bind /dev $rootdir/dev
+CLEANUP+=("umount $rootdir/dev")
+mount --bind /proc $rootdir/proc
+CLEANUP+=("umount $rootdir/proc")
+mount --bind /sys $rootdir/sys
+CLEANUP+=("umount $rootdir/sys")
+chroot $rootdir grub-install --removable
+chroot $rootdir update-grub
 
 echo "$board" > $rootdir/etc/hostname
 
 cat <<EOF > $rootdir/etc/fstab
-UUID=$bootuuid	/boot		ext3	rw		0	2
-UUID=$rootuuid	/		$ROOTFS_TYPE	rw		0	1
+UUID=$espuuid /boot/efi vfat rw 0 2
+UUID=$rootuuid / $ROOTFS_TYPE rw 0 1
 EOF
 
 echo "root:pi" | chroot $rootdir chpasswd

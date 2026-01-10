@@ -24,11 +24,6 @@ pre_debootstrap()
 	:
 }
 
-pre_mkbootscr()
-{
-	:
-}
-
 post_debootstrap()
 {
 	:
