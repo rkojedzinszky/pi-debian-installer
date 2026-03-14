@@ -1,5 +1,14 @@
 #include "rk3568-rock-3a.dts"
 
+&uart1 {
+	status = "disabled";
+	/delete-node/ bluetooth;
+};
+
+&sfc {
+	status = "disabled";
+};
+
 &pcie2x1 {
 	status = "disabled";
 };
@@ -57,5 +66,33 @@
 };
 
 &usb2phy1_otg {
+	status = "disabled";
+};
+
+&gpu {
+	status = "disabled";
+};
+
+&vpu {
+	status = "disabled";
+};
+
+&vdpu_mmu {
+	status = "disabled";
+};
+
+&vepu {
+	status = "disabled";
+};
+
+&vepu_mmu {
+	status = "disabled";
+};
+
+&vop {
+	status = "disabled";
+};
+
+&vop_mmu {
 	status = "disabled";
 };
